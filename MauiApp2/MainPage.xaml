@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+    <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:MauiApp2"
+             xmlns:behaviors="http://schemas.microsoft.com/dotnet/2021/maui/toolkit/behaviors"
+             x:Class="MauiApp2.MainPage">
+
+    <StackLayout Margin="40,0">
+        <Entry x:Name="PhoneEntry"
+           Placeholder="0123456789"
+           HorizontalOptions="FillAndExpand">
+            <Entry.Behaviors>
+                <local:IsNumericBehavior />
+            </Entry.Behaviors>
+        </Entry>
+
+        <Label Text="Invalid Phone Number"
+           TextColor="Red"
+           IsVisible="False"
+           x:Name="PhoneErrorLabel"/>
+
+        <Entry x:Name="PasswordEntry" 
+           Placeholder="Password" 
+           IsPassword="True" 
+           HorizontalOptions="FillAndExpand">
+            <Entry.Behaviors>
+                <xct:TextValidationBehavior
+                MinimumLength="6"
+                IsValid="{Binding Source={x:Reference PasswordEntry}, Path=TextColor, Converter={StaticResource ColorToBoolConverter}, ConverterParameter={x:Static Color.Green}}"
+                InvalidStyle="{StaticResource InvalidEntryStyle}"
+                ValidStyle="{StaticResource ValidEntryStyle}"/>
+            </Entry.Behaviors>
+        </Entry>
+
+        <Label Text="Password length should be greater than 5" 
+           TextColor = "Red" 
+           IsVisible = "False" 
+           x:Name = "PasswordErrorLabel"/>
+
+        <CheckBox x:Name = "TermsAndConditionsCheckbox"/>
+
+        <Label x:Name="TermsAndConditionsLabel"
+           Text="I have read the terms and conditions"
+           TextColor="Blue" FontSize="Small"
+           HorizontalOptions="Start" Margin="5">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer
+                Command="{Binding Source={x:Reference TermsAndConditionsCheckbox}, Path=IsChecked, Converter={StaticResource BoolToCommandConverter}}"/>
+            </Label.GestureRecognizers>
+        </Label>
+
+        <Button x:Name = "RegisterButton" 
+            Text = "Register" 
+            FontSize  ="22"
+            CornerRadius=10
+            WidthRequest=200
+            HeightRequest=50
+            HorizontalOptions ="CenterAndExpand"
+            VerticalOptions ="EndAndExpand">
+
+            <!-- MultiTrigger to enable button -->
+            <Button.Triggers>
+                <MultiTrigger TargetType="Button">
+                    <MultiTrigger.Conditions>
+                        <BindingCondition Binding="{Binding Source={x:Reference PhoneEntry}, Path=Text, Converter={StaticResource IsNumericConverter}}" Value="True"/>
+                        <BindingCondition Binding="{Binding Source={x:Reference PasswordEntry}, Path=TextColor, Converter={StaticResource ColorToBoolConverter}, ConverterParameter={x:Static Color.Green}}" Value="True"/>
+                        <BindingCondition Binding="{Binding Source={x:Reference TermsAndConditionsCheckbox}, Path=IsChecked}" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="IsEnabled" Value="True"/>
+                </MultiTrigger>
+            </Button.Triggers>
+
+        </Button>
+
+    </StackLayout>
+
+</ContentPage>
